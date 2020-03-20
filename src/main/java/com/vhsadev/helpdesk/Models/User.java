@@ -1,9 +1,15 @@
 package com.vhsadev.helpdesk.Models;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
@@ -18,26 +24,29 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotEmpty(message = "The field EMAIL is required.")
 	@Email(message = "Please, provide a valid e-mail address.")
 	private String email;
-	
+
 	@NotEmpty(message = "The field NAME is required.")
 	private String name;
-	
+
 	@NotEmpty(message = "The field LAST NAME is required.")
 	private String lastName;
-	
+
 	@NotEmpty(message = "The field PASSWORD is required.")
-	@Length(min = 6, max = 32,message = "You must provide a password with a minimum of 6 and a maximum of 32 characters.")
+	@Length(min = 6, max = 32, message = "You must provide a password with a minimum of 6 and a maximum of 32 characters.")
 	private String password;
-	
+
 	private Boolean isActive;
-	
-	public User(){}
-	
-	
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles;
+
+	public User() {
+	}
 
 	public User(Long id, String email, String name, String lastName, String password, Boolean isActive) {
 		this.id = id;
@@ -55,8 +64,6 @@ public class User {
 		this.password = password;
 		this.isActive = isActive;
 	}
-
-
 
 	public Long getId() {
 		return id;
@@ -105,7 +112,13 @@ public class User {
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-	
-	
-	
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
 }

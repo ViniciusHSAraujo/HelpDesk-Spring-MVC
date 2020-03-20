@@ -12,7 +12,7 @@ import com.vhsadev.helpdesk.Models.User;
 @RequestMapping("/users")
 public class UserController {
 
-	@GetMapping("/")
+	@GetMapping("")
 	public String index(Model model) {
 		return "users/index";
 	}

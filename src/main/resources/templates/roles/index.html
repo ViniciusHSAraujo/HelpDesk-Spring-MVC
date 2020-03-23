@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="LayoutPadrao">
 <th:block layout:fragment="content">
+	
 	<div class="col-xs-12 col-md-12 mb-3">
-		<a href="/roles/create" class="btn btn-success">Create</a>
+		<a href="/roles/create" class="btn btn-success">Create new Role</a>
 	</div>
 
-	
 	<div class="col-xs-12 col-md-12">
 
 		<h4 class="mt-4 mb-4">Listing Roles</h4>
@@ -24,8 +24,8 @@
 					<td th:text="${role.id}"></td>
 					<td th:text="${role.name}"></td>
 					<td>
-						<form th:action="@{/roles/delete/{id}(id = ${role.id})}" th:method="delete">
-							<button class="btn btn-danger">Delete</button>
+						<form th:action="@{/roles/delete/{id}(id = ${role.id})}" th:method="post">
+							<button class="btn btn-danger operacao-de-risco">Delete</button>
 						</form>
 					</td>
 				</tr>

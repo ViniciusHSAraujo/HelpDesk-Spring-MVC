@@ -13,17 +13,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.vhsadev.helpdesk.Models.User;
-import com.vhsadev.helpdesk.Services.UserService;
+import com.vhsadev.helpdesk.Services.Interfaces.IUserService;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
 	@Autowired
-	private UserService userService;
+	private IUserService userService;
 	
 	@GetMapping("")
 	public String index(Model model) {
+		model.addAttribute("users", userService.findAll());
 		return "users/index";
 	}
 
@@ -47,6 +48,18 @@ public class UserController {
 		}
 		
 		User userCreated = this.userService.create(user);
+		
+		return "redirect:/users";
+	}
+	
+	@PostMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id, Model model) {
+		
+		try {
+			userService.delete(id);
+		} catch (Exception e) {
+			//TODO - Informar se não deletar..
+		}
 		
 		return "redirect:/users";
 	}

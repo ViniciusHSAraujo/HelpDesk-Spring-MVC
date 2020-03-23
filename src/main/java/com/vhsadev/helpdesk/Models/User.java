@@ -16,6 +16,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Entity
 @Table(name = "users")
@@ -39,7 +40,7 @@ public class User {
 	@Length(min = 6, max = 32, message = "You must provide a password with a minimum of 6 and a maximum of 32 characters.")
 	private String password;
 
-	private Boolean isActive;
+	private Boolean isActive = true;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))

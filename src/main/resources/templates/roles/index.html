@@ -1,22 +1,37 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="LayoutPadrao">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="LayoutPadrao">
 <th:block layout:fragment="content">
-	<table class="table table-bordered">
-		<thead>
-			<tr>
-				<th>Id</th>
-				<th>Roles</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>1</td>
-				<td>Admin</td>
-			</tr>
-		</tbody>
-	</table>
+	<div class="col-xs-12 col-md-12 mb-3">
+		<a href="/roles/create" class="btn btn-success">Create</a>
+	</div>
+
+	
+	<div class="col-xs-12 col-md-12">
+
+		<h4 class="mt-4 mb-4">Listing Roles</h4>
+
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Roles</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="role : ${roles}">
+					<td th:text="${role.id}"></td>
+					<td th:text="${role.name}"></td>
+					<td>
+						<form th:action="@{/roles/delete/{id}(id = ${role.id})}" th:method="delete">
+							<button class="btn btn-danger">Delete</button>
+						</form>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </th:block>
+
 </html>

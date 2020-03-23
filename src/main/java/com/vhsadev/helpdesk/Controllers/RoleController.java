@@ -1,14 +1,19 @@
 package com.vhsadev.helpdesk.Controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -24,6 +29,7 @@ public class RoleController {
 
 	@GetMapping("")
 	public String index(Model model) {
+		model.addAttribute("roles", roleService.findAll());
 		return "roles/index";
 	}
 
@@ -33,20 +39,28 @@ public class RoleController {
 		return "roles/create";
 	}
 
-	@PostMapping
-	public String save(@Valid @ModelAttribute("role") Role role, Model model, BindingResult bindingResult) {
+	@PostMapping("/save")
+	public String save(@Valid @ModelAttribute("role") Role role, BindingResult bindingResult, Model model) {
 		
 		if (bindingResult.hasErrors()) {
-			return "redirect:/roles/new";
+			return "roles/create";
 		}
 		
-		Role roleCreated = roleService.create(role);
+		Role roleCreated = this.roleService.create(role);
 		
 		return "redirect:/roles";
 	}
 
-	@DeleteMapping
-	public String delete(Model model) {
-		return null;
+
+	@PostMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id, Model model) {
+		
+		try {
+			roleService.delete(id);
+		} catch (Exception e) {
+			//TODO - Informar se não deletar..
+		}
+		
+		return "redirect:/roles";
 	}
 }

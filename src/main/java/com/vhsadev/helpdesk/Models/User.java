@@ -37,7 +37,7 @@ public class User {
 	private String lastName;
 
 	@NotEmpty(message = "The field PASSWORD is required.")
-	@Length(min = 6, max = 32, message = "You must provide a password with a minimum of 6 and a maximum of 32 characters.")
+	@Length(min = 6, message = "You must provide a password with a minimum of 6 characters.")
 	private String password;
 
 	private Boolean isActive = true;

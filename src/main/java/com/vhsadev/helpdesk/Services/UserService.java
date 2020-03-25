@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vhsadev.helpdesk.Models.Role;
@@ -20,6 +21,9 @@ public class UserService implements IUserService {
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public List<User> findAll() {
@@ -28,6 +32,7 @@ public class UserService implements IUserService {
 
 	@Override
 	public User create(User user) {
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 		User userCreated = userRepository.save(user);
 		return userCreated;
 	}
@@ -49,6 +54,9 @@ public class UserService implements IUserService {
 
 	@Override
 	public User update(Long id, User user) {
+		
+		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+		
 		User userExists = getById(id);
 		if (userExists != null) {
 			userExists.setId(user.getId());

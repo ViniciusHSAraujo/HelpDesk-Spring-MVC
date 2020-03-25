@@ -16,5 +16,7 @@ public interface IUserService {
 	public void delete(Long id) throws Exception;
 	
 	public User update(Long id, User user);
+	
+	public User getById(Long id);
 
 }

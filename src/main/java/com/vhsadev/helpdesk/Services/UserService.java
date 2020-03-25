@@ -34,22 +34,32 @@ public class UserService implements IUserService {
 
 	@Override
 	public void delete(Long id) throws Exception {
-		User user = findById(id);
+		User user = getById(id);
 		userRepository.delete(user);
 	}
 
-	private User findById(Long id) throws NotFoundException {
+	public User getById(Long id) {
 		Optional<User> user = userRepository.findById(id);
 
 		if (!user.isPresent()) {
-			throw new NotFoundException("Not found a user with this id.");
+			return null;
 		}
 		return user.get();
 	}
 
 	@Override
 	public User update(Long id, User user) {
-		// TODO Auto-generated method stub
-		return null;
+		User userExists = getById(id);
+		if (userExists != null) {
+			userExists.setId(user.getId());
+			userExists.setName(user.getName().equals("") ? userExists.getName() : user.getName());
+			userExists.setLastName(user.getLastName().equals("") ? userExists.getLastName() : user.getLastName());
+			userExists.setEmail(user.getEmail().equals("") ? userExists.getEmail() : user.getEmail());
+			userExists.setPassword(user.getPassword().equals("") ? userExists.getPassword() : user.getPassword());
+			userExists.setIsActive(user.getIsActive());
+			
+			userRepository.save(userExists);
+		}
+		return userExists;
 	}
 }

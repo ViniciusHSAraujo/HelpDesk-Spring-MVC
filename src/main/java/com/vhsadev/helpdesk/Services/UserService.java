@@ -1,5 +1,7 @@
 package com.vhsadev.helpdesk.Services;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +13,7 @@ import com.vhsadev.helpdesk.Models.Role;
 import com.vhsadev.helpdesk.Models.User;
 import com.vhsadev.helpdesk.Repositories.RolesRepository;
 import com.vhsadev.helpdesk.Repositories.UserRepository;
-import com.vhsadev.helpdesk.Services.Interfaces.IRoleService;
 import com.vhsadev.helpdesk.Services.Interfaces.IUserService;
-
-import javassist.NotFoundException;
 
 @Service
 public class UserService implements IUserService {
@@ -24,7 +23,9 @@ public class UserService implements IUserService {
 	
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-
+	@Autowired
+	private RolesRepository roleRepository;
+	
 	@Override
 	public List<User> findAll() {
 		return userRepository.findAll();
@@ -33,8 +34,12 @@ public class UserService implements IUserService {
 	@Override
 	public User create(User user) {
 		user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-		User userCreated = userRepository.save(user);
-		return userCreated;
+		Role userRole = roleRepository.findByName("USER");
+		user.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
+		
+		userRepository.save(user);
+		
+		return user;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.vhsadev.helpdesk.configurations;
 
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +16,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	
 	@Autowired
 	private DataSource dataSource;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().usersByUsernameQuery("select email, active, password from user where email = ?")
-		.authoritiesByUsernameQuery("select usr.email, rl.name from user usr "
-								  + "inner join user_role usrr on (usr.user_id = usrr.user_id) "
-								  + "inner join role rl on (usrr.role_id = rl.role_id) "
-								  + "where usr.email = ?;")
-		.dataSource(dataSource)
-		.passwordEncoder(bCryptPasswordEncoder);
-	}
-	
-	@Override
-	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/registration").permitAll()
+	protected void configure(HttpSecurity http) throws Exception {
+
+		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/registration").permitAll()
 				.antMatchers("/**").hasAnyAuthority("ADMIN", "USER").anyRequest().authenticated().and().csrf().disable()
 				.formLogin().loginPage("/login").failureUrl("/login?errors=true").defaultSuccessUrl("/users")
 				.usernameParameter("email").passwordParameter("password").and().logout()
@@ -47,7 +35,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity webSecurity) {
-		webSecurity.ignoring().antMatchers("/static/**", "/js/**", "/css/**", "/images/**", "/videos/**",
+		webSecurity.ignoring().antMatchers("/static/**", "/js/**", "/css/**", "/videos/**", "/images/**",
 				"/resources/**");
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.jdbcAuthentication().usersByUsernameQuery(
+				" select email, password, is_active from users where email = ? and is_active = 1")
+				.authoritiesByUsernameQuery(" select usr.email, rl.name from users usr "
+						+ " inner join users_roles usrr on (usr.id = usrr.user_id) "
+						+ " inner join roles rl on (usrr.role_id = rl.id)" + " where usr.email = ? "
+						+ " and   usr.is_active = 1")
+				.dataSource(dataSource).passwordEncoder(bCryptPasswordEncoder);
+
 	}
 }

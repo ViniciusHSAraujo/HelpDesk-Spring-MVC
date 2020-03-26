@@ -71,6 +71,10 @@ public class UserService implements IUserService {
 			userExists.setPassword(user.getPassword().equals("") ? userExists.getPassword() : user.getPassword());
 			userExists.setIsActive(user.getIsActive());
 			
+			Role userRole = roleRepository.findByName(user.getRoles().iterator().next().getName());
+			
+			userExists.setRoles(new HashSet<Role>(Arrays.asList(userRole)));
+			
 			userRepository.save(userExists);
 		}
 		return userExists;

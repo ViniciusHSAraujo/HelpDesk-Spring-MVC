@@ -25,9 +25,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/registration").permitAll()
+		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/register").permitAll()
 				.antMatchers("/**").hasAnyAuthority("ADMIN", "USER").anyRequest().authenticated().and().csrf().disable()
-				.formLogin().loginPage("/login").failureUrl("/login?errors=true").defaultSuccessUrl("/users")
+				.formLogin().loginPage("/login").failureUrl("/login?errors=true").defaultSuccessUrl("/")
 				.usernameParameter("email").passwordParameter("password").and().logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/").and()
 				.exceptionHandling().accessDeniedPage("/denied");
@@ -41,8 +41,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.jdbcAuthentication().usersByUsernameQuery(
-				" select email, password, is_active from users where email = ? and is_active = 1")
+		auth.jdbcAuthentication()
+				.usersByUsernameQuery(" select email, password, is_active from users where email = ? and is_active = 1")
 				.authoritiesByUsernameQuery(" select usr.email, rl.name from users usr "
 						+ " inner join users_roles usrr on (usr.id = usrr.user_id) "
 						+ " inner join roles rl on (usrr.role_id = rl.id)" + " where usr.email = ? "

@@ -17,6 +17,7 @@
 				<tr>
 					<th>Name</th>
 					<th>Email</th>
+					<th>State</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
@@ -24,14 +25,17 @@
 				<tr th:each="user : ${users}">
 					<td th:text="${user.name}"></td>
 					<td th:text="${user.email}"></td>
-					<td>
-						<a th:href="@{/users/edit/{id}(id = ${user.id})}" class="btn btn-warning">Edit</a>
+					<td th:switch="${user.isActive}"><span th:case="${true}"
+						class="badge badge-success">Active</span> <span th:case="${false}"
+						class="badge badge-danger">Disabled</span></td>
+
+					<td><a th:href="@{/users/edit/{id}(id = ${user.id})}"
+						class="btn btn-warning">Edit</a>
 
 						<form th:action="@{/users/delete/{id}(id = ${user.id})}"
-							th:method="post">
-							<button class="btn btn-danger operacao-de-risco">Delete</button>
-						</form>
-					</td>
+							th:method="post" class="d-inline">
+							<button class="btn btn-danger operacao-de-risco class="d-inline"">Delete</button>
+						</form></td>
 				</tr>
 			</tbody>
 		</table>
